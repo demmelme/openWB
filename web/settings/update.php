@@ -73,8 +73,15 @@
 							<div class="custom-control custom-radio">
 								<input class="custom-control-input" type="radio" name="releasetrainRadioBtn" id="radioBtnStable" value="stable" disabled>
 								<label class="custom-control-label vaRow" for="radioBtnStable">
-									Stable:
+									Stable Snaptec:
 									<span class="mx-1" id="availStableVersionSpan" data-version=""></span><span class="spinner-grow spinner-grow-sm" id="availStableVersionSpinner"></span>
+								</label>
+							</div>
+							<div class="custom-control custom-radio">
+								<input class="custom-control-input" type="radio" name="releasetrainRadioBtn" id="radioBtnStableDemmelme" value="stableDemmelme" disabled>
+								<label class="custom-control-label vaRow" for="radioBtnStableDemmelme">
+									Stable Demmelme:
+									<span class="mx-1" id="availStableDemmelmeVersionSpan" data-version=""></span><span class="spinner-grow spinner-grow-sm" id="availStableDemmelmeVersionSpinner"></span>
 								</label>
 							</div>
 							<div class="custom-control custom-radio">
@@ -87,7 +94,7 @@
 							<div class="custom-control custom-radio">
 								<input class="custom-control-input" type="radio" name="releasetrainRadioBtn" id="radioBtnNightly" value="master" disabled>
 								<label class="custom-control-label vaRow" for="radioBtnNightly">
-									Nightly:
+									Nightly Demmelme (Master):
 									<span class="mx-1" id="availNightlyVersionSpan" data-version=""></span><span class="spinner-grow spinner-grow-sm" id="availNightlyVersionSpinner"></span>
 								</label>
 							</div>
@@ -223,9 +230,10 @@
 				}
 
 				$(function getAllVersions() {
-					displayVersion("Stable", 'https://raw.githubusercontent.com/snaptec/openWB/stable17/web/version');
-					displayVersion("Beta", 'https://raw.githubusercontent.com/snaptec/openWB/beta/web/version');
-					displayVersion("Nightly", 'https://raw.githubusercontent.com/snaptec/openWB/master/web/version');
+					displayVersion("Stable", 'https://raw.githubusercontent.com/demmelme/openWB/stable17/web/version');
+					displayVersion("StableDemmelme", 'https://raw.githubusercontent.com/demmelme/openWB/stableDemmelme/web/version');
+					displayVersion("Beta", 'https://raw.githubusercontent.com/demmelme/openWB/beta/web/version');
+					displayVersion("Nightly", 'https://raw.githubusercontent.com/demmelme/openWB/master/web/version');
 				});
 
 				$.get({
@@ -266,6 +274,9 @@
 						} else if ( releasetrains.includes("stable17") ) {
 							// version from config file not availabe so select stable
 							$("input[value='stable17']").prop('checked', true);
+						} else if ( releasetrains.includes("stableDemmelme") ) {
+							// version from config file not availabe so select stable
+							$("input[value='stableDemmelme']").prop('checked', true);
 						} else if ( releasetrains.includes("beta") ) {
 							// stable not availabe so select beta
 							$("input[value='beta']").prop('checked', true);
@@ -285,6 +296,9 @@
 					switch (choice) {
 						case "stable":
 							$("#selectedVersionSpan").text( $("#availStableVersionSpan").data("version") );
+							break;
+						case "stableDemmelme":
+							$("#selectedVersionSpan").text( $("#availStableDemmelmeVersionSpan").data("version") );
 							break;
 						case "beta":
 							$("#selectedVersionSpan").text( $("#availBetaVersionSpan").data("version") );
