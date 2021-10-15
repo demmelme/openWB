@@ -72,7 +72,7 @@ from responses import *
 import base64
 from Crypto.Cipher import Blowfish
 
-BASE_URL = "https://gdcportalgw.its-mo.com/api_v190426_NE/gdc/"
+BASE_URL = "https://gdcportalgw.its-mo.com/api_v210707_NE/gdc/"
 
 log = logging.getLogger(__name__)
 
@@ -102,8 +102,8 @@ class Session(object):
     def _request_with_retry(self, endpoint, params):
         ret = self._request(endpoint, params)
 
-        if ("status" in ret) and (ret["status"] >= 400):
-            log.error(
+        if "status" in ret and ret["status"] >= 400:
+            log.info(
                 "carwings error; logging in and trying request again: %s" % ret)
             # try logging in again
             self.connect()
@@ -118,7 +118,12 @@ class Session(object):
         else:
             params["custom_sessionid"] = ""
 
-        req = Request('POST', url=BASE_URL + endpoint, data=params).prepare()
+        req = Request(
+            'POST',
+            url=BASE_URL + endpoint,
+            data=params,
+            headers={"User-Agent": ""}
+        ).prepare()
 
         log.debug("invoking carwings API: %s" % req.url)
         log.debug("params: %s" % json.dumps(

@@ -146,7 +146,9 @@ class CarwingsLoginResponse(CarwingsResponse):
         customer_info = response["CustomerInfo"]
         self.tz = customer_info["Timezone"]
         self.language = customer_info["Language"]
-        self.user_vehicle_bound_time = customer_info["VehicleInfo"]["UserVehicleBoundTime"]
+        self.user_vehicle_bound_time = \
+            customer_info["VehicleInfo"].get("UserVehicleBoundTime",
+                                             "1970-01-01T00:00:00Z")
 
         self.leafs = [{
             "vin": self.vin,
@@ -675,7 +677,7 @@ class CarwingsElectricRateSimulationResponse(CarwingsResponse):
         t = r["PriceSimulatorTotalInfo"]
 
         self.month = r["DisplayMonth"]     # e.g. "Feb/2016"
-
+        self.travellist = r["PriceSimulatorDetailInfoDateList"]["PriceSimulatorDetailInfoDate"]
         self.total_number_of_trips = t["TotalNumberOfTrips"]
         self.total_power_consumption = t["TotalPowerConsumptTotal"]                # in kWh
         self.total_acceleration_power_consumption = t["TotalPowerConsumptMoter"]   # in kWh
