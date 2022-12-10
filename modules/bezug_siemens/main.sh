@@ -1,7 +1,17 @@
 #!/bin/bash
+OPENWBBASEDIR=$(cd "$(dirname "$0")/../../" && pwd)
+RAMDISKDIR="${OPENWBBASEDIR}/ramdisk"
+#DMOD="EVU"
+DMOD="MAIN"
 
+if [ ${DMOD} == "MAIN" ]; then
+	MYLOGFILE="${RAMDISKDIR}/openWB.log"
+else
+	MYLOGFILE="${RAMDISKDIR}/evu.log"
+fi
 
+bash "$OPENWBBASEDIR/packages/legacy_run.sh" "modules.devices.siemens.device" "counter" "${bezug1_ip}" >>"$MYLOGFILE" 2>&1
+ret=$?
 
-python /var/www/html/openWB/modules/bezug_siemens/siemens.py $bezug1_ip
-wattbezug=$(</var/www/html/openWB/ramdisk/wattbezug)
-echo $wattbezug
+openwbDebugLog ${DMOD} 2 "EVU RET: ${ret}"
+cat "${RAMDISKDIR}/wattbezug"
