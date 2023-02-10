@@ -10,7 +10,7 @@ buttons = [
     {"gpio":  6, "mode": 2, "text": "NurPV", "pv70": 0},
     {"gpio": 12, "mode": 0, "text": "SofortLaden"},
     {"gpio": 13, "mode": 3, "text": "Stop"},
-    {"gpio": 16, "mode": 1, "text": "NurPV 70%", "pv70": 1},
+    {"gpio": 16, "mode": 2, "text": "NurPV 70%", "pv70": 1},
     {"gpio": 21, "mode": 4, "text": "Standby"},
 ]
 
