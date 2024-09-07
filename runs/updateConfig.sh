@@ -581,6 +581,12 @@ updateConfig(){
 	if ! grep -Fq "soc_id_intervall=" $ConfigFile; then
 		echo "soc_id_intervall=120" >> $ConfigFile
 	fi
+	if ! grep -Fq "soc_smarteq_intervallladen=" $ConfigFile; then
+		echo "soc_smarteq_intervallladen=20" >> $ConfigFile
+	fi
+	if ! grep -Fq "soc_smarteq_intervall=" $ConfigFile; then
+		echo "soc_smarteq_intervall=120" >> $ConfigFile
+	fi
 	if ! grep -Fq "releasetrain=" $ConfigFile; then
 		echo "releasetrain=stable" >> $ConfigFile
 	fi
@@ -1291,6 +1297,11 @@ updateConfig(){
 	if grep -Fq "awattaraktiv=" $ConfigFile; then
 		sed -i '/^awattaraktiv=/d' $ConfigFile
 	fi
+	for i in $(seq 1 8); do
+		if ! grep -Fq "lp${i}etbasedcharging=" $ConfigFile; then
+			echo "lp${i}etbasedcharging=1" >> $ConfigFile
+		fi
+	done
 	if ! grep -Fq "plz=" $ConfigFile; then
 		echo "plz=36124" >> $ConfigFile
 	fi
@@ -1683,6 +1694,9 @@ updateConfig(){
 	fi
 	if ! grep -Fq "soc2pin=" $ConfigFile; then
 		echo "soc2pin=pin" >> $ConfigFile
+	fi
+	if ! grep -Fq "soc2pint=" $ConfigFile; then
+		echo "soc2pint=''" >> $ConfigFile
 	fi
 	if ! grep -Fq "lgessv1ip=" $ConfigFile; then
 		echo "lgessv1ip=youripaddress" >> $ConfigFile
@@ -2095,6 +2109,22 @@ updateConfig(){
 	if ! grep -Fq "soc_id_vin=" $ConfigFile; then
 		echo "soc_id_vin=VIN" >> $ConfigFile
 	fi
+	if ! grep -Fq "soc_smarteq_username=" $ConfigFile; then
+		echo "soc_smarteq_username=User" >> $ConfigFile
+	fi
+	if ! grep -Fq "soc_smarteq_passwort=" $ConfigFile; then
+		echo "soc_smarteq_passwort=''" >> $ConfigFile
+	else
+		sed -i "/soc_smarteq_passwort='/b; s/^soc_smarteq_passwort=\(.*\)/soc_smarteq_passwort=\'\1\'/g" $ConfigFile
+	fi
+	if ! grep -Fq "soc_smarteq_pin=" $ConfigFile; then
+		echo "soc_smarteq_pin=''" >> $ConfigFile
+	else
+		sed -i "/soc_smarteq_pin='/b; s/^soc_smarteq_pin=\(.*\)/soc_smarteq_pin=\'\1\'/g" $ConfigFile
+	fi
+	if ! grep -Fq "soc_smarteq_vin=" $ConfigFile; then
+		echo "soc_smarteq_vin=VIN" >> $ConfigFile
+	fi
 	if ! grep -Fq "soc2vin=" $ConfigFile; then
 		echo "soc2vin=" >> $ConfigFile
 		echo "soc2intervall=60" >> $ConfigFile
@@ -2204,6 +2234,7 @@ updateConfig(){
 			echo "soc_evcc_username_lp1=''"
 			echo "soc_evcc_password_lp1=''"
 			echo "soc_evcc_vin_lp1=''"
+			echo "soc_evcc_pin_lp1=''"
 			echo "soc_evcc_token_lp1=''"
 			echo "soc_evcc_intervall=720"
 			echo "soc_evcc_intervallladen=15"
@@ -2211,8 +2242,15 @@ updateConfig(){
 			echo "soc_evcc_username_lp2=''"
 			echo "soc_evcc_password_lp2=''"
 			echo "soc_evcc_vin_lp2=''"
+			echo "soc_evcc_pin_lp2=''"
 			echo "soc_evcc_token_lp2=''"
 		} >> $ConfigFile
+	fi
+	if ! grep -Fq "soc_evcc_pin_lp1=" $ConfigFile; then
+			echo "soc_evcc_pin_lp1=''" >> $ConfigFile
+	fi
+	if ! grep -Fq "soc_evcc_pin_lp2=" $ConfigFile; then
+			echo "soc_evcc_pin_lp2=''" >> $ConfigFile
 	fi
 	if ! grep -Fq "cpunterbrechungmindestlaufzeitaktiv=" $ConfigFile; then
 		{
@@ -2225,6 +2263,9 @@ updateConfig(){
 	fi
 	if ! grep -Fq "sungrowsr=" $ConfigFile; then
 		echo "sungrowsr=0" >> $ConfigFile
+	fi
+	if ! grep -Fq "sungrow2sr=" $ConfigFile; then
+		echo "sungrow2sr=0" >> $ConfigFile
 	fi
 	if ! grep -Fq "sungrowspeicherport=" $ConfigFile; then
 		echo "sungrowspeicherport=502" >> $ConfigFile
@@ -2247,6 +2288,9 @@ updateConfig(){
 	fi
 	if ! grep -Fq "batterx_ip=" $ConfigFile; then
 		echo "batterx_ip=192.168.0.17" >> $ConfigFile
+	fi
+	if ! grep -Fq "pvbatterxextinverter=" $ConfigFile; then
+		echo "pvbatterxextinverter=0" >> $ConfigFile
 	fi
 	if grep -Fq "socmodul=soc_bluelink" $ConfigFile; then
 		sed -i "s/^socmodul=soc_bluelink/socmodul=soc_kia/g" $ConfigFile
@@ -2310,6 +2354,17 @@ updateConfig(){
 	if grep -Fq "socmodul1=soc_idlp2" $ConfigFile; then
 		sed -i "s/^socmodul1=soc_idlp2/socmodul=soc_vwidlp2/g" $ConfigFile
 	fi
-
+	if [[ -f /home/pi/ppbuchse ]]; then
+		ppbuchse=$(</home/pi/ppbuchse)
+		if ! grep -Fq "ppbuchse=" $ConfigFile; then
+			echo "ppbuchse=$ppbuchse" >> $ConfigFile
+		else
+			ppbuchseOld=$(grep -F "ppbuchse=" $ConfigFile)
+			ppbuchseOld=${ppbuchseOld#ppbuchse=}
+			if ((ppbuchseOld != ppbuchse)); then
+				sed -i "s/^ppbuchse=.*$/ppbuchse=$ppbuchse/g" $ConfigFile
+			fi
+		fi
+	fi
 	echo "Config file Update done."
 }

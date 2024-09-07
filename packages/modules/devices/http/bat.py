@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from typing import Dict, Union
 
+from requests import Session
+
 from dataclass_utils import dataclass_from_dict
 from modules.common.component_state import BatState
 from modules.common.component_type import ComponentDescriptor
@@ -24,18 +26,18 @@ class HttpBat:
         self.__get_exported = create_request_function(url, self.component_config.configuration.exported_path)
         self.__get_soc = create_request_function(url, self.component_config.configuration.soc_path)
 
-    def update(self) -> None:
-        imported = self.__get_imported()
-        exported = self.__get_exported()
-        power = self.__get_power()
+    def update(self, session: Session) -> None:
+        power = self.__get_power(session)
+        exported = self.__get_exported(session)
+        imported = self.__get_imported(session)
         if imported is None or exported is None:
             imported, exported = self.sim_counter.sim_count(power)
 
         bat_state = BatState(
             power=power,
-            soc=self.__get_soc(),
+            exported=exported,
             imported=imported,
-            exported=exported
+            soc=self.__get_soc(session)
         )
         self.store.set(bat_state)
 
